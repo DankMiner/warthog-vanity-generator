@@ -92,8 +92,8 @@ def main() -> int:
                 print(f"    Address    : {hit['address']}")
                 print(f"    Private key: {hit['privkey_hex']}")
                 print(f"    Pubkey     : {hit['pubkey_hex']}")
-                print(f"    Import     : wart-wallet --restore {hit['privkey_hex']} "
-                      f"-f my-wallet.json")
+                print(f"    Import     : Warthog wallet -> Add wallet -> "
+                      f"Restore with private key -> paste the Private key above")
                 if fp:
                     fp.write(json.dumps(hit) + "\n"); fp.flush()
             except Exception:

@@ -842,8 +842,9 @@ class VanityApp(tk.Tk):
             self._append_text(f"    Pubkey      : ", "dim")
             self._append_text(f"{hit['pubkey_hex']}\n", "hit_hex")
         self._append_text(
-            f"    Import with : wart-wallet --restore {hit['privkey_hex']} "
-            f"-f my-wallet.json\n", "dim")
+            f"    Import      : Warthog wallet -> Add wallet -> "
+            f"Restore with private key -> paste the Private hex above\n",
+            "dim")
 
     def _append_text(self, s: str, tag: str = None):
         self.txt.config(state="normal")

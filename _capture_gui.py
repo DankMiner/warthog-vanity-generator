@@ -24,18 +24,23 @@ GEOM = "+60+30"  # near top-left so the full window fits any screen
 def main():
     app = warthog_gui.VanityApp()
     app.geometry(GEOM)
+    # Force the window above any other top-level so the grab catches us
+    # and not whatever is in front (browser, terminal, etc.).
+    app.attributes("-topmost", True)
+    app.lift()
+    app.focus_force()
     app.update_idletasks()
+    app.update()
 
     def grab_and_quit():
+        app.lift()
         app.update_idletasks()
-        time.sleep(0.4)  # let WM finalize the geometry
+        app.update()
+        time.sleep(0.6)  # let WM finalize the raise
         x = app.winfo_rootx()
         y = app.winfo_rooty()
         w = app.winfo_width()
         h = app.winfo_height()
-        # Grab the bbox of *this* Tk window (winfo_rootx/y is the
-        # top-left of the client area in screen coords; we expand
-        # upward by ~30 px to include the titlebar).
         bbox = (x, max(0, y - 32), x + w, y + h)
         from PIL import ImageGrab
         img = ImageGrab.grab(bbox=bbox, all_screens=True)
@@ -44,7 +49,7 @@ def main():
         print(f"saved {OUT}  ({img.size[0]}x{img.size[1]})")
         app.after(50, app.destroy)
 
-    app.after(700, grab_and_quit)
+    app.after(900, grab_and_quit)
     app.mainloop()
 
 

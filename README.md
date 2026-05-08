@@ -28,8 +28,8 @@ A desktop tool that grinds Warthog private keys until one produces an
 address that starts with a chosen hex prefix (e.g. `dead`, `beef`,
 `deadbeef`). It uses your CPU by default and your CUDA GPU if you
 build the included `VanitySearch-Warthog.exe`. The found private keys
-import directly into the Warthog reference wallet
-(`wart-wallet --restore <hex>`).
+drop straight into your Warthog wallet — open it, **Add wallet → Restore
+with private key**, paste the hex, done.
 
 ## Why hex?
 
@@ -87,7 +87,7 @@ lowercase, and the GUI lowercases your input automatically).
     Address    : dank<...>
     Private key: <64 hex chars>
     Pubkey     : <66 hex chars>
-    Import     : wart-wallet --restore <64 hex chars> -f my-wallet.json
+    Import     : paste Private hex into the Warthog wallet -> Add wallet -> Restore with private key
 ```
 
 ## Prefix rules
@@ -105,18 +105,31 @@ lowercase, and the GUI lowercases your input automatically).
   `hex(SHA-256(payload)[0:4])`, deterministic from the payload. For
   prefix vanity you can target the first 40 chars at most.
 
-## Use the key with `wart-wallet`
+## Import the key into your Warthog wallet
 
-The Warthog reference wallet stores keys as a JSON file with a raw
-32-byte hex private key. To turn a vanity hit into a real wallet:
+You only need the **Private hex** line from a hit (64 lowercase hex
+characters). Copy it once and use either path below.
+
+### Option A — GUI wallet *(recommended)*
+
+1. Open the Warthog wallet on Windows.
+2. Click **Add wallet**.
+3. Choose **Restore with private key**.
+4. Set a password for the new wallet.
+5. Paste the 64-char hex private key.
+6. Confirm — the wallet derives the address and you're done. Verify the
+   address matches the one the vanity generator showed you before
+   sending any funds.
+
+### Option B — `wart-wallet` CLI *(advanced)*
+
+The reference command-line wallet stores keys as a JSON file:
 
 ```text
 wart-wallet --restore <64-hex-char-private-key> -f my-vanity-wallet.json
 ```
 
-That's the entire import flow. There is no `importprivkey` RPC, no
-descriptor-vs-legacy distinction, no qt console quoting, no WIF
-format. The wallet writes a `my-vanity-wallet.json` like:
+The wallet writes a `my-vanity-wallet.json` like:
 
 ```json
 {
@@ -127,8 +140,9 @@ format. The wallet writes a `my-vanity-wallet.json` like:
 ```
 
 Subsequent commands (`--address`, `--balance`, `--send`) operate on
-this file. Verify the `address` field matches what the vanity
-generator showed you before sending funds.
+this file. There is no `importprivkey` RPC, no descriptor-vs-legacy
+distinction, no qt console quoting, no WIF format — just the one
+restore command.
 
 ## Build `VanitySearch-Warthog.exe`
 
@@ -200,7 +214,7 @@ warthog-vanity-generator/
 | CLI rate stays at 0/s | Workers haven't reported their first batch yet. Wait ~5s; this is normal for very-short prefixes that finish before the first stats flush. |
 | GPU binary not detected | Build it (see above). The GUI looks for `VanitySearch-Warthog.exe` next to `warthog_gui.py`. |
 | Difficulty / ETA seems wildly off | Estimates assume coincurve+OpenSSL on CPU and ~3 Gkey/s on GPU. Switch backends or measure your actual rate from the LIVE STATUS panel after 30 s. |
-| `wart-wallet` reports "Invalid private key" on import | Make sure you copied the **64-char hex** value (the "Private hex" line from a hit), not the address. Both are hex but different lengths (64 vs 48). |
+| Wallet reports "Invalid private key" on import | Make sure you copied the **64-char hex** value (the "Private hex" line from a hit), not the 48-char address. Both are hex but different lengths. |
 
 ## Credits
 
